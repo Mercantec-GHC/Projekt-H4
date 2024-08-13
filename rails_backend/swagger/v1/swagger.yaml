@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: User Stats API
+  version: 1.0.0
+  description: API til at håndtere brugers statistikker, herunder oprettelse, opdatering, visning og sletning.
+
+paths:
+  /user_stat:
+    get:
+      summary: Hent liste over alle brugerstatistikker
+      operationId: getUserStats
+      responses:
+        '200':
+          description: En liste over brugerstatistikker
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserStat'
+
+    post:
+      summary: Opret en ny brugerstatistik
+      operationId: createUserStat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserStatInput'
+      responses:
+        '201':
+          description: Statistik oprettet succesfuldt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStat'
+        '422':
+          description: Ugyldige data indsendt
+
+  /user_stat/{id}:
+    get:
+      summary: Hent en specifik brugerstatistik baseret på ID
+      operationId: getUserStatById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: En brugerstatistik
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStat'
+        '404':
+          description: Statistik ikke fundet
+
+    put:
+      summary: Opdater en eksisterende brugerstatistik
+      operationId: updateUserStat
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserStatInput'
+      responses:
+        '200':
+          description: Statistik opdateret succesfuldt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStat'
+        '404':
+          description: Statistik ikke fundet
+        '422':
+          description: Ugyldige data indsendt
+
+    delete:
+      summary: Slet en brugerstatistik
+      operationId: deleteUserStat
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Statistik slettet succesfuldt
+        '404':
+          description: Statistik ikke fundet
+
+components:
+  schemas:
+    UserStat:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unikt ID for brugerstatistikken
+        wins:
+          type: integer
+          description: Antal vundne spil
+        lost:
+          type: integer
+          description: Antal tabte spil
+        games_played:
+          type: integer
+          description: Antal spil spillet
+        right_guesses:
+          type: integer
+          description: Antal rigtige gæt
+        skips:
+          type: integer
+          description: Antal skips
+        created_at:
+          type: string
+          format: date-time
+          description: Oprettelsesdato for statistikken
+        updated_at:
+          type: string
+          format: date-time
+          description: Sidst opdateret dato for statistikken
+
+    UserStatInput:
+      type: object
+      properties:
+        wins:
+          type: integer
+        lost:
+          type: integer
+        games_played:
+          type: integer
+        right_guesses:
+          type: integer
+        skips:
+          type: integer
